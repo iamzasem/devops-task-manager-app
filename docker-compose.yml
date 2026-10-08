@@ -6,15 +6,25 @@ services:
     container_name: devops-backend
     ports:
       - "5000:5000"
+
+    env_file:
+      - .env
+
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
     depends_on:
       - redis
+
     logging:
       driver: loki
       options:
         loki-url: "http://127.0.0.1:3100/loki/api/v1/push"
         loki-retries: "5"
+
     networks:
       - devops-network
+
 
   frontend:
     build:
@@ -22,28 +32,35 @@ services:
     container_name: devops-frontend
     ports:
       - "8080:80"
+
     depends_on:
       - backend
+
     logging:
       driver: loki
       options:
         loki-url: "http://127.0.0.1:3100/loki/api/v1/push"
         loki-retries: "5"
+
     networks:
       - devops-network
+
 
   redis:
     image: redis:7-alpine
     container_name: devops-redis
     ports:
       - "6379:6379"
+
     logging:
       driver: loki
       options:
         loki-url: "http://127.0.0.1:3100/loki/api/v1/push"
         loki-retries: "5"
+
     networks:
       - devops-network
+
 
   prometheus:
     image: prom/prometheus
@@ -54,6 +71,7 @@ services:
       - prometheus_data:/prometheus
     restart: unless-stopped
 
+
   grafana:
     image: grafana/grafana
     container_name: devops-grafana
@@ -61,6 +79,7 @@ services:
     volumes:
       - grafana_data:/var/lib/grafana
     restart: unless-stopped
+
 
   loki:
     image: grafana/loki:3.7.0
@@ -71,6 +90,7 @@ services:
       - ./monitoring/loki-config.yaml:/etc/loki/local-config.yaml:ro
     command: -config.file=/etc/loki/local-config.yaml
     restart: unless-stopped
+
 
 networks:
   devops-network:

@@ -1,5 +1,9 @@
+import os
+import psycopg
+import redis
 from flask import Flask, jsonify, request
 from flask_cors import CORS
+
 
 app = Flask(__name__)
 CORS(app)
@@ -12,9 +16,34 @@ tasks = [
 
 @app.route("/api/health", methods=["GET"])
 def health():
+    database = "healthy"
+    redis_status = "healthy"
+
+    try:
+        psycopg.connect(
+            host=os.getenv("DB_HOST"),
+            port=os.getenv("DB_PORT"),
+            dbname=os.getenv("POSTGRES_DB"),
+            user=os.getenv("POSTGRES_USER"),
+            password=os.getenv("POSTGRES_PASSWORD")
+        ).close()
+    except Exception:
+        database = "unhealthy"
+
+    try:
+        r = redis.Redis(
+            host=os.getenv("REDIS_HOST"),
+            port=int(os.getenv("REDIS_PORT", 6379))
+        )
+        r.ping()
+    except Exception:
+        redis_status = "unhealthy"
+
     return jsonify({
+        "service": "backend",
         "status": "healthy",
-        "service": "backend"
+        "database": database,
+        "redis": redis_status
     })
 
 
