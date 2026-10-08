@@ -1,0 +1,38 @@
+name: DevOps Task Manager CI/CD
+
+on:
+  push:
+    branches:
+      - main
+
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: [self-hosted, linux]
+
+    steps:
+
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Prepare environment
+        run: |
+          cp /opt/devops-task-manager/.env .env
+
+      - name: Validate Docker Compose
+        run: |
+          docker compose config -q
+
+      - name: Build application
+        run: |
+          docker compose build
+
+      - name: Deploy application
+        run: |
+          docker compose up -d --remove-orphans
+
+      - name: Verify deployment
+        run: |
+          docker compose ps
+          curl -f http://localhost/api/health
