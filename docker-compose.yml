@@ -1,4 +1,3 @@
-
 services:
 
   backend:
@@ -31,6 +30,27 @@ services:
     networks:
       - devops-network
 
+  prometheus:
+    image: prom/prometheus
+    container_name: devops-prometheus
+    network_mode: host
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus_data:/prometheus
+    restart: unless-stopped
+
+  grafana:
+    image: grafana/grafana
+    container_name: devops-grafana
+    network_mode: host
+    volumes:
+      - grafana_data:/var/lib/grafana
+    restart: unless-stopped
+
 networks:
   devops-network:
     driver: bridge
+
+volumes:
+  prometheus_data:
+  grafana_data:
