@@ -497,10 +497,6 @@ Useful Jenkins file:
 Jenkinsfile
 ```
 
-> **Screenshot 11 — Jenkins pipeline**  
-
-> **Screenshot 12 — GitHub webhook / Jenkins trigger**  
-> _Insert screenshot here: Jenkins GitHub hook trigger setting or GitHub webhook configuration._
 
 ---
 
