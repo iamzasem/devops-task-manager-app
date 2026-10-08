@@ -8,6 +8,11 @@ services:
       - "5000:5000"
     depends_on:
       - redis
+    logging:
+      driver: loki
+      options:
+        loki-url: "http://127.0.0.1:3100/loki/api/v1/push"
+        loki-retries: "5"
     networks:
       - devops-network
 
@@ -19,6 +24,11 @@ services:
       - "8080:80"
     depends_on:
       - backend
+    logging:
+      driver: loki
+      options:
+        loki-url: "http://127.0.0.1:3100/loki/api/v1/push"
+        loki-retries: "5"
     networks:
       - devops-network
 
@@ -27,6 +37,11 @@ services:
     container_name: devops-redis
     ports:
       - "6379:6379"
+    logging:
+      driver: loki
+      options:
+        loki-url: "http://127.0.0.1:3100/loki/api/v1/push"
+        loki-retries: "5"
     networks:
       - devops-network
 
@@ -45,6 +60,16 @@ services:
     network_mode: host
     volumes:
       - grafana_data:/var/lib/grafana
+    restart: unless-stopped
+
+  loki:
+    image: grafana/loki:3.7.0
+    container_name: devops-loki
+    ports:
+      - "3100:3100"
+    volumes:
+      - ./monitoring/loki-config.yaml:/etc/loki/local-config.yaml:ro
+    command: -config.file=/etc/loki/local-config.yaml
     restart: unless-stopped
 
 networks:
