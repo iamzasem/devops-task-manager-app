@@ -32,7 +32,7 @@ The main goal of the project is not the business logic. The main goal is to show
 | Reverse proxy | Nginx |
 | Version control | Git + GitHub |
 | CI/CD | Jenkins |
-| Monitoring | Prometheus + Grafana + cAdvisor |
+| Monitoring | Prometheus + Grafana |
 | Logging | Loki + Grafana |
 | Operating system | Linux Ubuntu |
 
