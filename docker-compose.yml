@@ -1,0 +1,36 @@
+
+services:
+
+  backend:
+    build:
+      context: ./backend
+    container_name: devops-backend
+    ports:
+      - "5000:5000"
+    depends_on:
+      - redis
+    networks:
+      - devops-network
+
+  frontend:
+    build:
+      context: ./frontend
+    container_name: devops-frontend
+    ports:
+      - "8080:80"
+    depends_on:
+      - backend
+    networks:
+      - devops-network
+
+  redis:
+    image: redis:7-alpine
+    container_name: devops-redis
+    ports:
+      - "6379:6379"
+    networks:
+      - devops-network
+
+networks:
+  devops-network:
+    driver: bridge
