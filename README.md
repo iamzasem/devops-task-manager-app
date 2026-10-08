@@ -870,7 +870,7 @@ The complete deployment process is:
 ```bash
 git clone https://github.com/iamzasem/devops-task-manager-app.git
 cd devops-task-manager
-```
+```    
 
 ## Step 2 — Prepare environment variables
 
